@@ -11,7 +11,7 @@ var list;
 // Ready? Set? Go!
 bot.on('ready', () => {
     bot.user.setStatus("Online"); //dnd , online , ldle
-    bot.user.setGame("NeXuS Team " + config.prefix + "help");
+    bot.user.setGame("JEUX HERE " + config.prefix + "help");
     console.log("Bot connecté");
     fs.readFile("blacklist.txt", "UTF8", (e, d) => {
         if (e) throw e;
