@@ -338,27 +338,6 @@ var commands = {
                 }).catch(console.error);
             }
         }
-        ,
-        'eval': {
-            description: "Permet d'exécuter du code directement",
-            syntax: config.prefix + "eval <code>",
-            level: 3,
-            exec: function (message) {
-                if (message.author.id !== "246779580902277121" && message.author.id !== "265018556133933068") return;
-                let args = message.content.split(" ").slice(1);
-                try {
-                    var code = args.join(" ");
-                    var evaled = eval(code);
-                    if (typeof evaled !== "string")
-                        evaled = require("util").inspect(evaled);
-                    message.channel.sendCode("xl", clean(evaled));
-                } catch (err) {
-                    message.channel.sendMessage(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-                }
-            }
-        }
-
-    }
     ;
 
 function checklevel(message) {
