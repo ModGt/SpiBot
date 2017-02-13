@@ -1,0 +1,15 @@
+{
+  "name": "bot_discord_dm",
+  "version": "2.0.0",
+  "description": "Un bot pour discord",
+  "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^11.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "M0dGt",
+  "license": "ISC"
+}
