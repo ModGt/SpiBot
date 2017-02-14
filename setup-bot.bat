@@ -4,7 +4,7 @@ call npm -version >NUL 2>&1
 if "%ERRORLEVEL%" == "0" goto init
 
 echo.
-echo NPM was not found. Please, install Node.js and NPM
+echo NPM n'a pas ete trouver veuiller installer NPM et NodeJS
 echo http://nodejs.org
 echo.
 
