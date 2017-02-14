@@ -11,7 +11,7 @@ var list;
 // Ready? Set? Go!
 bot.on('ready', () => {
     bot.user.setStatus("Online"); //dnd , online , ldle
-    bot.user.setGame("JEUX HERE " + config.prefix + "help");
+    bot.user.setGame("Mes commandes : " + config.prefix + "help");
     console.log("Bot connecté");
     fs.readFile("blacklist.txt", "UTF8", (e, d) => {
         if (e) throw e;
@@ -37,7 +37,6 @@ bot.on("error", err => {
 })
 
 bot.on('message', m => {
-    if (m.author.bot) return;
 
     if (checklevel(m) == 0) {
         // La fonction a un problème
@@ -338,6 +337,27 @@ var commands = {
                 }).catch(console.error);
             }
         }
+        ,
+        'eval': {
+            description: "Permet d'exécuter du code directement",
+            syntax: config.prefix + "eval <code>",
+            level: 3,
+            exec: function (message) {
+                if (message.author.id !== "246779580902277121" && message.author.id !== "265018556133933068") return;
+                let args = message.content.split(" ").slice(1);
+                try {
+                    var code = args.join(" ");
+                    var evaled = eval(code);
+                    if (typeof evaled !== "string")
+                        evaled = require("util").inspect(evaled);
+                    message.channel.sendCode("xl", clean(evaled));
+                } catch (err) {
+                    message.channel.sendMessage(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+                }
+            }
+        }
+
+    }
     ;
 
 function checklevel(message) {
