@@ -1,7 +1,7 @@
-﻿{
+{
   "prefix": "!",
-  "token": "", (token du bot ici)
-  "capslimit": "8",
-  "adminrole": "", (id du rôle admin)
-  "modrole" : ""  (id du rôle modo)
+  "token": "token du bot ici", 
+  "capslimit": "8", // choissiser ce que vous voulait
+  "adminrole": "id du rôle admin", 
+  "modrole" : "id du rôle modo"  
 }
