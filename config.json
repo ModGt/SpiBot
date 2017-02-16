@@ -1,7 +1,0 @@
-{
-  "prefix": "!",
-  "token": "Token de votre bot ici",
-  "capslimit": "8",
-  "adminrole": "Id du rôle admin pour le bot ",
-  "modrole" : "Id du rôle modo pour le bot"
-}
