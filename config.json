@@ -1,7 +1,7 @@
 {
   "prefix": "!",
-  "token": "MjgxODc3MzQ2NDIyODgyMzA0.C4eWfQ.nVMHNMG0q3yJNe6LWJKYB5yZaIo",
+  "token": "Token de votre bot ici",
   "capslimit": "8",
-  "adminrole": "281875399175045120",
-  "modrole" : "281875431744077824"
+  "adminrole": "Id du rôle admin pour le bot ",
+  "modrole" : "Id du rôle modo pour le bot"
 }
