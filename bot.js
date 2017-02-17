@@ -19,7 +19,7 @@ var bot = new Discord.Client({autoReconnect: true});
 
 // Ready? Set? Go!
 bot.on('ready', () => {
-    bot.user.setStatus("Online"); //dnd , online , ldle
+    bot.user.setStatus("online"); //dnd , online , ldle
     bot.user.setGame("Mes commandes : " + config.prefix + "help");
     console.log("Bot connecté");
 });
@@ -45,33 +45,33 @@ process.on("unhandledRejection", err => {
 });
 
 bot.on('message', m => {
-    if (m.author.bot) return;	
+    if (m.author.bot) return;
     if (checklevel(m.member) == 0) {
         if (capsLimit(m)) {
             m.delete();
             return m.reply("Calme toi sur les majuscules !")
                 .then(m => {
-                m.delete(3000)
-            })
+                    m.delete(3000)
+                })
                 .catch(console.error);
         }
     }
-	addXpToUser(m)
-	
+    addXpToUser(m)
+
     if (!m.content.startsWith(config.prefix)) return;
     var cmd = m.content.split(' ')[0].substring(config.prefix.length).toLowerCase();
     let args = m.content.split(" ").slice(1).join(" ");
     if (commands.hasOwnProperty(cmd))
         if (checklevel(m.member) >= commands[cmd].level) {
             commands[cmd].exec(m);
-			if(cmd !== "eval"){
-            console.log("---------\n" +
-                "\033[32;1m" + new Date() + "\033[0m\n" +
-                "\033[33;1mCommand:\033[0m\033[33m " + cmd + "\033[0m\n" +
-                "\033[33;1mArguments:\033[0m\033[33m " + args + "\033[0m\n" +
-                "\033[31;1mUtilisateur:\033[0m\033[31m " + m.author.username + "(" + m.author.id + ")\033[0m\n" +
-                "\033[36;1mAuthorized:\033[0m\033[36m " + (checklevel(m.member) >= commands[cmd].level) + "\033[0m")
-			}
+            if (cmd !== "eval") {
+                console.log("---------\n" +
+                    "\033[32;1m" + new Date() + "\033[0m\n" +
+                    "\033[33;1mCommand:\033[0m\033[33m " + cmd + "\033[0m\n" +
+                    "\033[33;1mArguments:\033[0m\033[33m " + args + "\033[0m\n" +
+                    "\033[31;1mUtilisateur:\033[0m\033[31m " + m.author.username + "(" + m.author.id + ")\033[0m\n" +
+                    "\033[36;1mAuthorized:\033[0m\033[36m " + (checklevel(m.member) >= commands[cmd].level) + "\033[0m")
+            }
         } else {
             m.reply(`Vous n'avez pas la permission d'utiliser cette commande (Votre niveau de permission est trop faible: **${checklevel(m.member)}** au lieu de **${commands[cmd].level}**)`)
         }
@@ -99,17 +99,6 @@ var commands = {
                  message.reply("Regarde tes messages privés pour voir la listes des commandes")
                  */
 
-            }
-        },
-        'ping': {
-            description: 'Affiche le temps que met le bot pour répondre',
-            syntax: config.prefix + 'ping',
-            level: 0,
-            exec: function (message) {
-                message.channel.sendMessage("Ping...")
-                    .then(mm => {
-                    mm.edit(`Pong, took ${mm.createdTimestamp - message.createdTimestamp} ms`)
-                })
             }
         },
         'serverinfo': {
@@ -141,57 +130,59 @@ var commands = {
                     let embed = new Discord.RichEmbed().setTitle(`Information pour ce membre`).setColor("#51adf6").setThumbnail(message.author.avatarURL)
                     embed.addField("Nom", message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")")
                     embed.addField("Alias", message.member.nickname)
-					embed.addField("Rejoind le server",message.member.joinedAt)
-                    embed.addField("Rôles", message.member.roles.array().splice(1).map(r =>r.name).join(", "))
+                    embed.addField("Rejoind le server", message.member.joinedAt)
+                    embed.addField("Rôles", message.member.roles.array().splice(1).map(r =>r.name).join(", ") ? message.member.roles.array().splice(1).map(r =>r.name).join(", ") : "Aucun role assigné")
                     embed.addField("Status", message.member.user.presence.status)
-                    embed.addField("Permission level",user_level +" | "+ level_alias[user_level])
-                    return message.channel.sendEmbed(embed);
+                    embed.addField("Permission level", user_level + " | " + level_alias[user_level])
+                    return message.channel.sendEmbed(embed).catch(console.error);
                 } else {
                     let guildMember = message.guild.member(message.mentions.users.first());
-                    let user_level =  checklevel(guildMember)
+                    let user_level = checklevel(guildMember)
                     if (!guildMember) return message.reply("Utilisateur inconnu.");
                     let embed = new Discord.RichEmbed().setColor("#51adf6").setThumbnail(guildMember.user.avatarURL)
                     embed.setTitle(`Information pour le membre ${guildMember.user.username}`)
                     embed.addField("Nom", guildMember.user.username + "#" + guildMember.user.discriminator + " (" + guildMember.id + ")")
                     embed.addField("Alias", guildMember.nickname)
-					embed.addField("Rejoind le server",guildMember.joinedAt)
-                    embed.addField("Rôles", guildMember.roles.array().splice(1).map(r =>r.name).join(", "))
+                    embed.addField("Rejoind le server", guildMember.joinedAt)
+                    embed.addField("Rôles", guildMember.roles.array().splice(1).map(r =>r.name).join(", ") ? guildMember.roles.array().splice(1).map(r =>r.name).join(", ") : "Aucun role assigné")
                     embed.addField("Status", guildMember.user.presence.status)
-                    embed.addField("Permission level",user_level +" | "+ level_alias[user_level])
+                    embed.addField("Permission level", user_level + " | " + level_alias[user_level])
                     embed.setColor("#51adf6");
-                    return message.channel.sendEmbed(embed);
+                    return message.channel.sendEmbed(embed).catch(console.error);
                 }
 
             }
         },
-		'version': {
-			description: "Affiche la version du bot discord",
-			syntax: config.prefix + "version",
-			level: 0,
-			exec: function(message){
-				 let embed = new Discord.RichEmbed().setColor("#147006").setTitle("Information Bot discord").setThumbnail(bot.user.avatarURL)
-				 embed.addField("Créateur","M0dGt")
-				 embed.addField("Correction/créations de functions:",'Sabrus')
-				 embed.addField("Date de création",bot.user.createdAt)
-				 embed.addField("Date de derniere modification", new Date(2017,02,16))
-				 embed.addField("Version du bot","2.1")
-				 embed.addField("API Discord",`Discord.js v${Discord.version}`)
-				 return message.channel.sendEmbed(embed);
-			}
-			
-		},
-		'mylevel': {
-			description: "Affiche ton niveau",
-			syntax: config.prefix + "mylevel",
-			level: 0,
-			exec: function(message){
-				 sql.get(`SELECT * FROM scores WHERE userId ='${message.author.id}' AND guildId = ${message.guild.id}`).then(row => {
-                if (!row) return message.reply('Ton niveau actuel est: 0');
-                message.reply(`Ton niveau actuel est: ${row.level} | Tu as ${row.points} points`);
-            });
-			}
-			
-		},
+        'version': {
+            description: "Affiche la version du bot discord",
+            syntax: config.prefix + "version",
+            level: 0,
+            exec: function (message) {
+                let embed = new Discord.RichEmbed().setColor("#147006").setTitle("Information Bot discord").setThumbnail(bot.user.avatarURL)
+                embed.addField("Créateur", "M0dGt")
+                embed.addField("Avec la participation de:", 'Sabrus')
+                embed.addField("Date de création", bot.user.createdAt)
+                embed.addField("Date de derniere modification", new Date(2017, 2, 15))
+                embed.addField("Version du bot", "2.1")
+                embed.addField("API Discord", `Discord.js v${Discord.version}`)
+                return message.channel.sendEmbed(embed);
+            }
+
+        },
+        'mylevel': {
+            description: "Affiche ton niveau",
+            syntax: config.prefix + "mylevel",
+            level: 0,
+            exec: function (message) {
+                sql.get(`SELECT * FROM scores WHERE userId ='${message.author.id}' AND guildId = ${message.guild.id}`)
+                    .then(row => {
+                        if (!row) return message.reply('Ton niveau actuel est: 0');
+                        message.reply(`Tu as actuellement ${row.points} points | Ton niveau actuel est: ${row.level} `);
+                    })
+                    .catch(console.error);
+            }
+
+        },
         'purge': {
             description: "Supprime tout les messages d'un montant donné",
             syntax: config.prefix + 'purge <nombre 2-100>',
@@ -200,7 +191,7 @@ var commands = {
                 let args = message.content.split(" ").slice(1);
                 if (!args[0] || args[0] < 2 || args[0] > 100 || isNaN(args[0])) return message.reply("Veuillez indiquer une nombre de messages à supprimer entre 2 et 100 ")
 
-                if (!message.member.hasPermission('MANAGE_MESSAGES') && !(checklevel(message) === 3)) {
+                if (!message.member.hasPermission('MANAGE_MESSAGES') && !(checklevel(message.member) === 3)) {
                     return message.reply("Vous ne pouvez pas utiliser cette commande (MANAGE_MESSAGES) est requis")
                 }
 
@@ -211,17 +202,17 @@ var commands = {
                 message.channel.fetchMessages({limit: parseInt(args[0])})
                     .then(messages => {
 
-                    message.channel.bulkDelete(messages)
-                        .then(m => {
+                        message.channel.bulkDelete(messages)
+                            .then(m => {
 
-                    })
-                        .catch(console.error)
+                            })
+                            .catch(console.error)
 
-                    message.channel.sendMessage(`__**${messages.size}**__ message(s) ont été supprimés !`)
-                        .then(mm => {
-                        mm.delete(4000)
+                        message.channel.sendMessage(`__**${messages.size}**__ message(s) ont été supprimés !`)
+                            .then(mm => {
+                                mm.delete(4000)
+                            })
                     })
-                })
                     .catch(console.error)
 
 
@@ -233,7 +224,7 @@ var commands = {
             level: 1,
             exec: function (message) {
 
-                if (!message.member.hasPermission('KICK_MEMBERS') && !(checklevel(message) === 3)) {
+                if (!message.member.hasPermission('KICK_MEMBERS') && !(checklevel(message.member) === 3)) {
                     return message.reply("Vous ne pouvez pas utiliser cette commande (KICK_MEMBERS) est requis")
                 }
 
@@ -251,9 +242,11 @@ var commands = {
                     return message.reply("Cet utilisateur est incorrect ou n'existe pas")
                 }
 
-                kickMember.kick().then(member => {
-                    message.reply(member.user.username + " à bien été éjecté du serveur")
-                }).catch(console.error)
+                kickMember.kick()
+                    .then(member => {
+                        message.reply(member.user.username + " à bien été éjecté du serveur")
+                    })
+                    .catch(console.error)
 
             }
         }
@@ -273,9 +266,9 @@ var commands = {
                     annonce = args.splice(1).join(" ");
                 }
                 if (!channel) return message.reply("Le channel ne semble pas valide")
-					const embed = new Discord.RichEmbed().setTitle("__**ANNONCE**__").setColor("#F00")
-						embed.setDescription(annonce)	
-                channel.sendEmbed(embed)
+                const embed = new Discord.RichEmbed().setTitle("__**ANNONCE**__").setColor("#F00")
+                embed.setDescription(annonce)
+                return channel.sendEmbed(embed)
 
             }
         },
@@ -285,7 +278,7 @@ var commands = {
             level: 1,
             exec: function (message) {
                 let args = message.content.split(" ").slice(1);
-				message.delete();
+                message.delete();
                 let msg;
                 if (message.mentions.channels.size === 0) {
                     var channel = message.channel
@@ -295,7 +288,7 @@ var commands = {
                     msg = args.splice(1).join(" ");
                 }
                 if (!channel) return message.reply("Le channel ne semble pas valide")
-                channel.sendMessage(`${msg}`).catch(console.error)
+                return channel.sendMessage(`${msg}`).catch(console.error)
             }
         },
         'ban': {
@@ -303,7 +296,7 @@ var commands = {
             syntax: config.prefix + 'ban <@User mention> [delete 0-7 day message]',
             level: 2,
             exec: function (message) {
-                if (!message.member.hasPermission('BAN_MEMBERS') && !(checklevel(message) === 3)) {
+                if (!message.member.hasPermission('BAN_MEMBERS') && !(checklevel(message.member) === 3)) {
                     return message.reply("Vous ne pouvez pas utiliser cette commande (BAN_MEMBERS) est requis")
                 }
 
@@ -319,17 +312,17 @@ var commands = {
                 if (!banMember) {
                     return message.reply("Cet utilisateur est incorrect ou n'existe pas");
                 }
-				
-				if(!banMember.bannable){
-					return message.reply("Cet utilisateur ne peut etre banni");
-				}
-				
+
+                if (!banMember.bannable) {
+                    return message.reply("Cet utilisateur ne peut etre banni");
+                }
+
                 let args = message.content.split(" ").slice(1);
                 if (isNaN(args[1]) || args[1] > 7) args[1] = 0;
                 banMember.ban(parseInt(args[1]))
                     .then(member => {
-                    return message.channel.sendMessage(`Le membre **${member.user.username}**(${member.user.id}) à bien été banni`)
-                })
+                        return message.channel.sendMessage(`Le membre **${member.user.username}**(${member.user.id}) à bien été banni`)
+                    })
                     .catch(console.error)
             }
         },
@@ -339,7 +332,7 @@ var commands = {
             level: 2,
             exec: function (message) {
 
-                if (!message.member.hasPermission('BAN_MEMBERS') && !(checklevel(message) === 3)) {
+                if (!message.member.hasPermission('BAN_MEMBERS') && !(checklevel(message.member) === 3)) {
                     return message.reply("Vous ne pouvez pas utiliser cette commande (BAN_MEMBERS) est requis")
                 }
 
@@ -353,18 +346,20 @@ var commands = {
 
                 if (!args[0].match(/^[0-9]{18}$/)) return message.reply("l'id n'est pas dans le bon format, il doit etre constitué de 18 caractere numérique");
 
-                message.guild.fetchBans().then(ban => {
-                    if (ban.has(parseInt(args[0]))) {
-                        message.guild.unban(args[0])
-                            .then(user =>
-                            message.reply(`Cet utilisateur est maintenant débanni`))
-                            .catch(console.error);
+                message.guild.fetchBans()
+                    .then(ban => {
+                        if (ban.has(parseInt(args[0]))) {
+                            message.guild.unban(args[0])
+                                .then(user =>
+                                    message.reply(`Cet utilisateur est maintenant débanni`))
+                                .catch(console.error);
 
-                    } else {
-                        return message.reply(`Cet id est inconnu de la banlist`)
-                    }
+                        } else {
+                            return message.reply(`Cet id est inconnu de la banlist`)
+                        }
 
-                }).catch(console.error);
+                    })
+                    .catch(console.error);
             }
         }
         ,
@@ -394,11 +389,7 @@ var commands = {
 function checklevel(user) {
     if (user.id === '252168791654531072') {
         return 3;
-	}
-    if (user.id === '265018556133933068') {
-        return 3;
     }
-
     if (user.guild.ownerID === user.id) {
         return 2;
     }
@@ -409,40 +400,46 @@ function checklevel(user) {
     let ModRole = user.guild.roles.array().filter(r => r.id === `${config.modrole}`)[0].position
     if (level >= AdminRole) {
         return 2
-    }
-    if (level >= ModRole) {
+    } else if (level >= ModRole) {
         return 1
+    } else {
+        return 0
     }
-    return 0
 
 }
 
 function addXpToUser(message) {
-    sql.get(`SELECT * FROM scores WHERE userId ='${message.author.id}' AND guildId ='${message.guild.id}'`).then(row => {
-        if (!row) {
-            sql.run('INSERT INTO scores (userId,guildId, points, level) VALUES (?, ?, ?, ?)', [message.author.id,message.guild.id, 1, 0]);
-        } else {
-            let curLevel = Math.floor(0.1 * Math.sqrt(row.points + 1));
-            if (curLevel > row.level) {
-                row.level = curLevel;
-                sql.run(`UPDATE scores SET points = ${row.points + 1}, level = ${row.level} WHERE userId = ${message.author.id} AND guildId = ${message.guild.id}`);
-                message.reply(`Tu est monté de level, tu es maintenant level **${curLevel}**!`);
+    sql.get(`SELECT * FROM scores WHERE userId ='${message.author.id}' AND guildId ='${message.guild.id}'`)
+        .then(row => {
+            if (!row) {
+                sql.run('INSERT INTO scores (userId,guildId, points, level) VALUES (?, ?, ?, ?)', [message.author.id, message.guild.id, 1, 0])
+                    .catch(console.error);
+            } else {
+                let curLevel = Math.floor(0.01 * (row.points));
+                if (curLevel > row.level) {
+                    row.level = curLevel;
+                    sql.run(`UPDATE scores SET points = ${row.points + 1}, level = ${row.level} WHERE userId = ${message.author.id} AND guildId = ${message.guild.id}`)
+                        .catch(console.error);
+                    message.reply(`Tu es monté de level, tu es maintenant level **${curLevel}**!`);
+                }
+                sql.run(`UPDATE scores SET points = ${row.points + 1} WHERE userId = ${message.author.id} AND guildId = ${message.guild.id}`)
+                    .catch(console.error);
             }
-            sql.run(`UPDATE scores SET points = ${row.points + 1} WHERE userId = ${message.author.id} AND guildId = ${message.guild.id}`);
-        }
-    }).catch((e) => {
-        console.error;
-        sql.run('CREATE TABLE IF NOT EXISTS scores (userId TEXT,guildID TEXT, points INTEGER, level INTEGER)').then(() => {
-            sql.run('INSERT INTO scores (userId, guildID, points, level) VALUES (?, ?, ?, ?)', [message.author.id,message.guild.id, 1, 0]);
+        })
+        .catch((e) => {
+            console.error(e);
+            sql.run('CREATE TABLE IF NOT EXISTS scores (userId TEXT,guildID TEXT, points INTEGER, level INTEGER)')
+                .then(() => {
+                    sql.run('INSERT INTO scores (userId, guildID, points, level) VALUES (?, ?, ?, ?)', [message.author.id, message.guild.id, 1, 0])
+                        .catch(console.error);
+                })
+                .catch(console.error);
         });
-    });
 }
 
 
-
-
 /*
- * Function par SABRUS  Sabrus#8149
+ * Function par M0dGt & Sabrus
  * Return true si le nombre de majusucle dépasse le nombre autorisé
  * Return false sinon
  * */
