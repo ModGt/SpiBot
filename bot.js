@@ -20,7 +20,7 @@ var bot = new Discord.Client({autoReconnect: true});
 // Ready? Set? Go!
 bot.on('ready', () => {
     bot.user.setStatus("Online"); //dnd , online , ldle
-    bot.user.setGame("Dark Messiah France " + config.prefix + "help");
+    bot.user.setGame("Mes commandes : " + config.prefix + "help");
     console.log("Bot connecté");
 });
 
@@ -110,39 +110,6 @@ var commands = {
                     .then(mm => {
                     mm.edit(`Pong, took ${mm.createdTimestamp - message.createdTimestamp} ms`)
                 })
-            }
-        },
-        'ts': {
-            description: 'Affiche l\'adresse du teampseak',
-            syntax: config.prefix + 'ts',
-            level: 0,
-            exec: function (message) {
-                message.channel.sendMessage(`Le ts est accessible ici:`)
-                let embed = new Discord.RichEmbed().setTitle("dmfr.game-host.org").setURL("http://www.teamspeak.com/invite/dmfr.game-host.org/")
-                message.channel.sendEmbed(embed)
-            }
-        },
-        'site': {
-            description: 'Affiche l\'adresse du site web',
-            syntax: config.prefix + 'site',
-            level: 0,
-            exec: function (message) {
-                message.channel.sendMessage(`Le site internet DMFR est:`)
-                let embed = new Discord.RichEmbed().setTitle("http://dmfr.net").setURL("http://dmfr.net")
-                message.channel.sendEmbed(embed)
-            }
-        },
-        'staff': {
-            description: 'Affiche la liste des membres du staff',
-            syntax: config.prefix + 'staff',
-            level: 0,
-            exec: function (message) {
-                let embed = new Discord.RichEmbed().setTitle("Membres du Staff de Dmfr").setURL("http://dmfr.net")
-                embed.addField("Fondateur", "Izakaya")
-                embed.addField("Co-Fondateur", "M0dGt")
-                embed.addField("Administrateurs ***Ark Survival Evolved***", "Zolaire & Rathalos")
-                embed.addField("Administrateurs ***Conan Exiles***", "Zolaire & Tac'Snake")
-                message.channel.sendEmbed(embed)
             }
         },
         'serverinfo': {
